@@ -46,6 +46,7 @@ userRouter.post('/', async (request, response, next) => {
         ...organizationObject,
         users: [...users, savedUser._id]
       }
+      organizationObject.save();
     }
 
     return response.status(201).json(savedUser);
