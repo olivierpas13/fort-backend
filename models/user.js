@@ -12,6 +12,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     // unique: 'Username and password required',
   },
+  organization:{
+    type: String
+  }
 //   blogs: [
 //     {
 //       type: mongoose.Schema.Types.ObjectId,
