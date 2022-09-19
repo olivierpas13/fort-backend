@@ -42,11 +42,20 @@ userRouter.post('/', async (request, response, next) => {
     }
 
     if(organizationObject){
-      organizationObject = {
-        ...organizationObject,
-        users: [...users, savedUser._id]
+      try {
+        const newOrg = {
+          ...organizationObject,
+          users: [...organizationObject, savedUser._id]
+        }
+        await Organization.findByIdAndUpdate(organizationObject._id, newOrg, {new: true})
+      } catch (error) {
+        console.error(error);
       }
-      organizationObject.save();
+      // organizationObject = {
+      //   ...organizationObject,
+      //   users: [...users, savedUser._id]
+      // }
+      // organizationObject.save();
     }
 
     return response.status(201).json(savedUser);
