@@ -31,7 +31,7 @@ userRouter.post('/', async (request, response, next) => {
 
     const savedUser = await user.save();
     
-    const organizationObject  = await Organization.findOne({name: organization})
+    const organizationObject  = await Organization.findOne({name: savedUser.organization})
 
     if(!organizationObject){
       const org = new Organization({
@@ -43,19 +43,14 @@ userRouter.post('/', async (request, response, next) => {
 
     if(organizationObject){
       try {
-        const newOrg = {
-          ...organizationObject,
-          users: [...organizationObject, savedUser._id]
-        }
-        await Organization.findByIdAndUpdate(organizationObject._id, newOrg, {new: true})
+        await Organization.findByIdAndUpdate({
+          _id: organizationObject._id},
+          {users: organizationObject.users.concat(savedUser._id)},
+          {new: true})
+      
       } catch (error) {
         console.error(error);
       }
-      // organizationObject = {
-      //   ...organizationObject,
-      //   users: [...users, savedUser._id]
-      // }
-      // organizationObject.save();
     }
 
     return response.status(201).json(savedUser);
