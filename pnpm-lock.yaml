@@ -6,6 +6,7 @@ specifiers:
   dotenv: ^16.0.2
   express: ^4.18.1
   jsonwebtoken: ^8.5.1
+  mongodb: ^4.10.0
   mongoose: ^6.6.1
   nodemon: 2.0.20
 
@@ -15,6 +16,7 @@ dependencies:
   dotenv: 16.0.2
   express: 4.18.1
   jsonwebtoken: 8.5.1
+  mongodb: 4.10.0
   mongoose: 6.6.1
 
 devDependencies:
@@ -730,6 +732,18 @@ packages:
     dependencies:
       '@types/whatwg-url': 8.2.2
       whatwg-url: 11.0.0
+    dev: false
+
+  /mongodb/4.10.0:
+    resolution: {integrity: sha512-My2QxLTw0Cc1O9gih0mz4mqo145Jq4rLAQx0Glk/Ha9iYBzYpt4I2QFNRIh35uNFNfe8KFQcdwY1/HKxXBkinw==}
+    engines: {node: '>=12.9.0'}
+    dependencies:
+      bson: 4.7.0
+      denque: 2.1.0
+      mongodb-connection-string-url: 2.5.3
+      socks: 2.7.0
+    optionalDependencies:
+      saslprep: 1.0.3
     dev: false
 
   /mongodb/4.9.1:

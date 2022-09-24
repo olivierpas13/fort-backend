@@ -1,7 +1,12 @@
 import bcrypt from 'bcrypt';
 import Router from 'express';
 import User from '../models/user.js';
+// import Session from '../models/session'
 import Organization from '../models/organization.js';
+import mongodb from 'mongodb'
+import mongoose from 'mongoose';
+import { ObjectId } from 'mongodb';
+import organization from '../models/organization.js';
 
 const userRouter = Router();
 
@@ -53,10 +58,28 @@ userRouter.post('/', async (request, response, next) => {
       }
     }
 
-    return response.status(201).json(savedUser);
+    return response.json(savedUser).status(201);
   } catch (error) {
     return next(error);
   }
 });
+
+userRouter.patch('/:id', async (request, response, next) => {
+  const { id } = request.params;
+  const { body: {organization} } = request;
+  const newid = new ObjectId(id);
+  const user = await User.findByIdAndUpdate(newid, {organization: organization}, {new: true})
+  const org = await Organization.findOne({name: organization})
+  if(!org){
+    const org = new Organization({
+      name: organization,
+      users: [user._id]
+    })
+    org.save();
+  }
+    console.log(user);
+  return response.json(user).status(204);
+})
+
 
 export default userRouter;
