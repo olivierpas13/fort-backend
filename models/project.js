@@ -1,26 +1,25 @@
 import mongoose from "mongoose";
+import { issueSchema } from "./issue.js";
 
-const projectSchema = new mongoose.Schema({
+export const projectSchema = new mongoose.Schema({
     name: {
         type: String,
     },
-    orgaization:{
+    organization:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Organization'  
     },
     issues:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Issue'  
+        type: issueSchema,
     }]
 })
 
 /*eslint-disable*/
-organizationSchema.set('toJSON', {
+projectSchema.set('toJSON', {
     transform: (document, returnedObject) => {
       returnedObject.id = returnedObject._id.toString();
       delete returnedObject._id;
       delete returnedObject.__v;
-      delete returnedObject.passwordHash;
     },
   });
   /* eslint-enable */

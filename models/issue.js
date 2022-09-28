@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const issueSchema = new mongoose.Schema({
+export const issueSchema = new mongoose.Schema({
     title: {
         type: String,
     },
@@ -29,12 +29,12 @@ const issueSchema = new mongoose.Schema({
     },
     project:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Project'    
+        ref: 'Project'
     }    
 })
 
 /*eslint-disable*/
-organizationSchema.set('toJSON', {
+issueSchema.set('toJSON', {
     transform: (document, returnedObject) => {
       returnedObject.id = returnedObject._id.toString();
       delete returnedObject._id;

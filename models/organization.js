@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { projectSchema } from "./project.js";
+import { userSchema } from "./user.js";
 
 const organizationSchema = new mongoose.Schema({
     name: {
@@ -6,8 +8,12 @@ const organizationSchema = new mongoose.Schema({
     },
     users:[
         {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            type: userSchema
+        }
+    ],
+    projects: [
+        {
+            type: projectSchema
         }
     ]
 })
@@ -18,7 +24,6 @@ organizationSchema.set('toJSON', {
       returnedObject.id = returnedObject._id.toString();
       delete returnedObject._id;
       delete returnedObject.__v;
-      delete returnedObject.passwordHash;
     },
   });
   /* eslint-enable */

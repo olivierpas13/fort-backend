@@ -8,6 +8,9 @@ import { MONGODB_URI } from './utils/config.js';
 // const testingRouter = require('./controllers/testing');
 import loginRouter from './controllers/login.js';
 import userRouter from './controllers/user.js';
+import organizationRouter from './controllers/organizations.js'
+import issuesRouter from './controllers/issues.js'
+import projectsRouter from './controllers/projects.js'
 
 import { tokenExtractor } from './utils/jwtMiddleware.js';
 
@@ -32,7 +35,11 @@ app.use(express.json());
 app.use(tokenExtractor);
 
 app.use('/api/login', loginRouter);
+
+app.use('/api/organization', organizationRouter);
+app.use('/api/projects', projectsRouter);
 app.use('/api/users', userRouter);
+app.use('/api/issues', issuesRouter);
 
 // if (process.env.NODE_ENV === 'test') {
 /* eslint-disable */

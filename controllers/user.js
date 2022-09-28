@@ -1,12 +1,9 @@
 import bcrypt from 'bcrypt';
 import Router from 'express';
-import User from '../models/user.js';
-// import Session from '../models/session'
-import Organization from '../models/organization.js';
-import mongodb from 'mongodb'
-import mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
-import organization from '../models/organization.js';
+
+import User from '../models/user.js';
+import Organization from '../models/organization.js';
 
 const userRouter = Router();
 
@@ -37,11 +34,10 @@ userRouter.post('/', async (request, response, next) => {
     const savedUser = await user.save();
     
     const organizationObject  = await Organization.findOne({name: savedUser.organization})
-
     if(!organizationObject){
       const org = new Organization({
         name: organization,
-        users: [savedUser._id]
+        users: [savedUser],
       })
       await org.save();
     }
@@ -50,11 +46,11 @@ userRouter.post('/', async (request, response, next) => {
       try {
         await Organization.findByIdAndUpdate({
           _id: organizationObject._id},
-          {users: organizationObject.users.concat(savedUser._id)},
+          {users: organizationObject.users.concat(savedUser)},
           {new: true})
       
       } catch (error) {
-        console.error(error);
+        return next(error);
       }
     }
 
@@ -73,11 +69,19 @@ userRouter.patch('/:id', async (request, response, next) => {
   if(!org){
     const org = new Organization({
       name: organization,
-      users: [user._id]
+      users: [user]
     })
     org.save();
   }
-    console.log(user);
+
+  if(org){
+    org.users = [
+      ...org.users,
+      user
+    ]
+    org.save();
+  }
+
   return response.json(user).status(204);
 })
 
