@@ -28,12 +28,17 @@ issueRouter.post('/', async (request, response, next) => {
 
         const newid = new ObjectId(project);
 
-        const updatedProject = await Project.findByIdAndUpdate(
+        await Project.findByIdAndUpdate(
             {_id: newid},
             {issues: currentProject.issues.concat(savedIssue)},
             {new: true})
 
-        await Organization.findByIdAndUpdate(issueOrg._id, {"$push": {"projects": updatedProject}}, {new: true})
+        // await Organization.findByIdAndUpdate(issueOrg._id, {"$push": {"projects": updatedProject}}, {new: true})
+        
+        // await Organization.findByIdAndUpdate(
+        //     issueOrg._id, 
+        //     {$set: {projects: updatedProject}})
+
         return response.json(savedIssue).status(201).end();
 
     } catch (error) {
