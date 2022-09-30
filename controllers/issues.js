@@ -1,12 +1,13 @@
-import Router from 'express';
+import Router, { response } from 'express';
 import { ObjectId } from 'mongodb';
-
 
 import Issue from '../models/issue.js'
 import Organization from '../models/organization.js'
 import Project from '../models/project.js'
 
 const issueRouter = Router();
+
+// Create an issue
 
 issueRouter.post('/', async (request, response, next) => {
     try {
@@ -45,5 +46,24 @@ issueRouter.post('/', async (request, response, next) => {
         return next(error);
     }
 });
+
+// Get the organization's issues
+
+issueRouter.get('/:name', async (req, res, next) =>{
+    try {
+        const {name} = req.params
+
+        
+        const organization = await Organization.findOne({name: name});
+        
+        const issues = await Issue.find({organization: organization._id})
+
+        return res.json(issues);
+
+    } catch (error) {
+        return next(error);
+    }
+
+})
 
 export default issueRouter;
