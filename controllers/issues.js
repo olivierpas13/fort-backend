@@ -66,4 +66,47 @@ issueRouter.get('/:name', async (req, res, next) =>{
 
 })
 
+issueRouter.get('/:name/stats', async (req, res, next) =>{
+    try {
+        const {name} = req.params
+
+        const organization = await Organization.findOne({name: name});
+        
+        // Priority
+
+        const highPriorityIssues = await Issue.countDocuments({priority: "high", organization: organization._id})
+        const mediumPriorityIssues = await Issue.countDocuments({priority: "medium", organization: organization._id})
+        const lowPriorityIssues = await Issue.countDocuments({priority: "low", organization: organization._id})
+        
+        // Status
+        
+        const openIssues = await Issue.countDocuments({ticketStatus: "open", organization: organization._id})
+        const closedIssues = await Issue.countDocuments({ticketStatus: "closed", organization: organization._id})
+
+        // Project individual issues count
+
+        const projectsIssues = await Promise.all(
+            organization.projects.map(pr => {
+              return(Issue.countDocuments({project: pr._id}).then(res => {return({
+                projectName: pr.name,
+                projectId: pr._id,
+                projectIssues: res,
+            })}));
+            })
+          );
+
+        return res.json({
+            highPriorityIssues,
+            mediumPriorityIssues,
+            lowPriorityIssues,
+            openIssues, 
+            closedIssues, 
+            projectsIssues});
+
+    } catch (error) {
+        return next(error);
+    }
+
+})
+
 export default issueRouter;
