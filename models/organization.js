@@ -15,7 +15,10 @@ const organizationSchema = new mongoose.Schema({
         {
             type: projectSchema
         }
-    ]
+    ],
+    orgInvitationCode: {
+        type: String
+    }
 })
 
 /*eslint-disable*/
