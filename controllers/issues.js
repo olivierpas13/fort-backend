@@ -31,7 +31,7 @@ issueRouter.post('/', async (request, response, next) => {
 
         await Project.findByIdAndUpdate(
             {_id: newid},
-            {issues: currentProject.issues.concat(savedIssue)},
+            {issues: currentProject?.issues ? currentProject.issues.concat(savedIssue): [savedIssue]},
             {new: true})
 
         // await Organization.findByIdAndUpdate(issueOrg._id, {"$push": {"projects": updatedProject}}, {new: true})

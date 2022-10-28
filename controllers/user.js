@@ -90,6 +90,7 @@ userRouter.post('/', async (request, response, next) => {
 
 userRouter.patch('/:id', async (request, response, next) => {
   const { id } = request.params;
+  console.log(id);
   const { body: {organization} } = request;
   const newid = new ObjectId(id);
   const user = await User.findByIdAndUpdate(newid, {organization: organization}, {new: true})

@@ -39,7 +39,7 @@ loginRouter.post('/', async (request, response) => {
 
   return response
     .status(200)
-    .send({ token, name: user.name, email: user.email, organization: user.organization });
+    .send({ token, name: user.name, email: user.email, organization: user.organization, id: user._id });
 });
 
 export default loginRouter;
