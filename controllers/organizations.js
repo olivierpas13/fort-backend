@@ -1,4 +1,5 @@
 import Router from 'express';
+import jwt from 'jsonwebtoken';
 
 import Organization from '../models/organization.js';
 
@@ -14,6 +15,24 @@ organizationRouter.get('/:name', async (request, response, next) => {
     const { name } = request.params;
     const organization = await Organization.findOne({name: name});
     return response.json(organization);
+  } catch (error) {
+    return next(error);
+  }
+});
+
+organizationRouter.post('/:name/invitation/:role', async (request, response, next) => {
+  try {
+    const { name, role } = request.params;
+    const { orgInvitationCode } = request.body;
+    
+    const roleInvitationCode = jwt.sign({
+      name,
+      role,
+      orgInvitationCode,
+    }, process.env.SECRET);
+
+    response.send(roleInvitationCode).status(200).end();
+
   } catch (error) {
     return next(error);
   }

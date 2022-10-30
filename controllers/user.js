@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import Router from 'express';
 import { ObjectId } from 'mongodb';
 import { v4 as uuid } from 'uuid';
@@ -16,7 +17,13 @@ userRouter.get('/', async (request, response) => {
 
 userRouter.post('/', async (request, response, next) => {
   try {
-    const { name, email, password, organizationCode, organization } = request.body;
+    const { name, email, password, organizationCode: organizationCodeWithRole, organization } = request.body;
+
+    const {
+       name: organizationName,
+       role,
+       orgInvitationCode: organizationCode, 
+      } = jwt.verify(organizationCodeWithRole, process.env.SECRET)
 
     const saltRounds = 10;
 
@@ -30,21 +37,22 @@ userRouter.post('/', async (request, response, next) => {
 
     if(organizationCode){
 
-      const organizationFromInvitation = await Organization.findOne({orgInvitationCode: organizationCode})
+      // const organizationFromInvitation = await Organization.findOne({orgInvitationCode: organizationCode})
   
       const user = new User({
         name,
         email,
+        role,
         passwordHash,
-        organization: organizationFromInvitation.name
+        organization: organizationName,
       });
 
       savedUser = await user.save();
 
       try {
-        await Organization.findByIdAndUpdate({
-          _id: organizationFromInvitation._id},
-          {users: organizationFromInvitation.users.concat(savedUser)},
+        await Organization.findOneAndUpdate({
+          orgInvitationCode: organizationCode},
+          {$push: {users: savedUser}},
           {new: true})
       
       } catch (error) {
@@ -70,18 +78,11 @@ userRouter.post('/', async (request, response, next) => {
         users: [savedUser],
         orgInvitationCode: uuid()
       })
+
       await org.save();
 
     }
-
     
-    // const organizationObject  = await Organization.findOne({name: savedUser.organization})
-    // if(!organizationObject){
-    // }
-
-    // if(organizationObject){
-    // }
-
     return response.json(savedUser).status(201);
   } catch (error) {
     return next(error);
