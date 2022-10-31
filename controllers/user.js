@@ -68,6 +68,7 @@ userRouter.post('/', async (request, response, next) => {
         name,
         email,
         passwordHash,
+        role: admin,
         organization: organization
       });
 
