@@ -1,17 +1,22 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import Router from 'express';
+import Router, { request } from 'express';
 import { ObjectId } from 'mongodb';
 import { v4 as uuid } from 'uuid';
 
 import User from '../models/user.js';
 import Organization from '../models/organization.js';
-import organization from '../models/organization.js';
 
 const userRouter = Router();
 
 userRouter.get('/', async (request, response) => {
   const users = await User.find({});
+  response.json(users);
+});
+
+userRouter.get('/:organization', async (request, response) => {
+  const { organization } = request.params
+  const users = await User.find({organization});
   response.json(users);
 });
 
@@ -91,29 +96,52 @@ userRouter.post('/', async (request, response, next) => {
 });
 
 userRouter.patch('/:id', async (request, response, next) => {
-  const { id } = request.params;
-  console.log(id);
-  const { body: {organization} } = request;
-  const newid = new ObjectId(id);
-  const user = await User.findByIdAndUpdate(newid, {organization: organization}, {new: true})
-  const org = await Organization.findOne({name: organization})
-  if(!org){
-    const org = new Organization({
-      name: organization,
-      users: [user]
-    })
-    org.save();
+  try {
+    const { id } = request.params;
+    const { body: {organization} } = request;
+    const newid = new ObjectId(id);
+    const user = await User.findByIdAndUpdate(newid, {organization: organization}, {new: true})
+    const org = await Organization.findOne({name: organization})
+    if(!org){
+      const org = new Organization({
+        name: organization,
+        users: [user]
+      })
+      org.save();
+    }
+  
+    if(org){
+      org.users = [
+        ...org.users,
+        user
+      ]
+      org.save();
+    }
+  
+    return response.json(user).status(204);
+      
+  } catch (error) {
+    return next(error);    
+  }
+})
+
+userRouter.patch('/:id/role', async(req, res, next)=>{
+  try {
+
+    const { id } = req.params;
+    const { value } = req.body
+
+    const newid = new ObjectId(id);
+
+    const updatedUser = await User.findByIdAndUpdate(newid, {role: value.toLowerCase()}, {new: true})
+    
+    return res.json(updatedUser).status(204).end();
+
+  } catch (error) {
+    return next(error);
   }
 
-  if(org){
-    org.users = [
-      ...org.users,
-      user
-    ]
-    org.save();
-  }
 
-  return response.json(user).status(204);
 })
 
 
