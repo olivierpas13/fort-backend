@@ -18,13 +18,12 @@ export const userSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ['admin', 'project-manager', 'developer', 'submitter'],
+  },
+  project: {
+    // type: String
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project'
   }
-//   blogs: [
-//     {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: 'Blog',
-//     },
-//   ],
 });
 
 /*eslint-disable*/

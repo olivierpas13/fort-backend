@@ -15,9 +15,13 @@ userRouter.get('/', async (request, response) => {
 });
 
 userRouter.get('/:organization', async (request, response) => {
+  
   const { organization } = request.params
+
   const users = await User.find({organization});
+  
   response.json(users);
+
 });
 
 userRouter.post('/', async (request, response, next) => {

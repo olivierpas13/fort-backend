@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 
 import Organization from '../models/organization.js';
 import Project from '../models/project.js';
+import User from '../models/user.js';
 
 const projectRouter = Router();
 
@@ -14,13 +15,53 @@ projectRouter.get('/', async (request, response) => {
 projectRouter.get('/:id', async (request, response, next) => {
   try {
     const { id } = request.params;
-    const newid = new ObjectId(id);
     const project = await Project.findById(id);
     return response.json(project);
   } catch (error) {
     return next(error);
   }
 });
+
+projectRouter.get('/:id/stats', async (req, res, next) => {
+    try {
+
+      const { id } = req.params;
+
+      const project = await Project.findById(id);
+      
+      const users = await User.countDocuments({project: id})
+
+      const projectStats = {
+        projectName: project.name,
+        projectIssues: project.issues.length,
+        users,
+        highPriorityIssues: project.issues.filter(issue=> issue.priority === 'high').length,
+        mediumPriorityIssues: project.issues.filter(issue=> issue.priority === 'medium').length,
+        lowPriorityIssues: project.issues.filter(issue=> issue.priority === 'low').length,
+        openIssues: project.issues.filter(issue=> issue.ticketStatus === 'open').length,
+        closedIssues: project.issues.filter(issue=> issue.ticketStatus === 'closed').length,
+      }
+
+      return res.json(projectStats).end();
+    } catch (error) {
+      return next(error);
+    }
+});  
+
+projectRouter.get('/organization/:organization', async (req, res, next) => {
+    
+    try {
+
+        const { organization } = req.params;
+    
+        const projects = await Project.find({organization: organization});
+
+        return res.json(projects).status(200).end();
+
+    } catch (error) {
+        return next(error);        
+    }
+})
 
 projectRouter.post('/', async (req, res, next) =>{
     try {
