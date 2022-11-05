@@ -32,6 +32,7 @@ userRouter.post('/', async (request, response, next) => {
        name: organizationName,
        role,
        orgInvitationCode: organizationCode, 
+       project
       } = jwt.verify(organizationCodeWithRole, process.env.SECRET)
 
     const saltRounds = 10;
@@ -46,22 +47,25 @@ userRouter.post('/', async (request, response, next) => {
 
     if(organizationCode){
 
-      // const organizationFromInvitation = await Organization.findOne({orgInvitationCode: organizationCode})
-  
+
       const user = new User({
         name,
         email,
         role,
         passwordHash,
         organization: organizationName,
+        project: project.length === 0? null: project
       });
 
       savedUser = await user.save();
 
       try {
         await Organization.findOneAndUpdate({
+
           orgInvitationCode: organizationCode},
+          
           {$push: {users: savedUser}},
+          
           {new: true})
       
       } catch (error) {

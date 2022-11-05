@@ -14,12 +14,18 @@ projectRouter.get('/', async (request, response) => {
 
 projectRouter.get('/:id', async (request, response, next) => {
   try {
+    
     const { id } = request.params;
+    
     const project = await Project.findById(id);
+    
     return response.json(project);
-  } catch (error) {
+  
+} catch (error) {
+
     return next(error);
-  }
+
+}
 });
 
 projectRouter.get('/:id/stats', async (req, res, next) => {

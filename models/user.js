@@ -17,7 +17,7 @@ export const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['admin', 'project-manager', 'developer', 'submitter'],
+    enum: ['administrator', 'project-manager', 'developer', 'submitter'],
   },
   project: {
     // type: String

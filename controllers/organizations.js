@@ -22,13 +22,16 @@ organizationRouter.get('/:name', async (request, response, next) => {
 
 organizationRouter.post('/:name/invitation/:role', async (request, response, next) => {
   try {
+
     const { name, role } = request.params;
-    const { orgInvitationCode } = request.body;
+    
+    const { orgInvitationCode, project } = request.body;
     
     const roleInvitationCode = jwt.sign({
       name,
       role,
       orgInvitationCode,
+      project,
     }, process.env.SECRET);
 
     response.send(roleInvitationCode).status(200).end();
