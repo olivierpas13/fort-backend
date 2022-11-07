@@ -1,5 +1,6 @@
 import Router, { response } from 'express';
 import { ObjectId } from 'mongodb';
+import Issue from '../models/issue.js';
 
 import Organization from '../models/organization.js';
 import Project from '../models/project.js';
@@ -52,6 +53,49 @@ projectRouter.get('/:id/stats', async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
+});  
+
+projectRouter.get('/:id/weeklyStats', async (req, res, next) => {
+    try {
+
+        const { id } = req.params;
+
+        const currentDate = new Date();
+
+        const project = await Project.findById(id);
+
+        // Using the issues array inside the project
+
+        const weekIssues = project.issues.filter(issue=>{
+            const time = new Date(issue.createdOn).getTime(); 
+            return(currentDate.getTime() > time && time > currentDate.getDate()-7)
+        });
+
+        // Using a query for the weekly issues of an specific project
+
+        // const weekIssues = await Issue.find({
+        //     project: id,
+        //     createdOn: {
+        //         $lte: currentDate,
+        //         $gte: currentDate.setDate(currentDate.getDate()-7),
+        // }})
+
+      const weeklyStats = {
+        monday: weekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Mon').length,
+        tuesday: weekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Tue').length,
+        wednesday: weekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Wed').length,
+        thursday: weekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Thu').length,
+        friday: weekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Fri').length,
+        saturday: weekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Sat').length,
+        sunday: weekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Sun').length,
+    }
+
+      return res.json(weeklyStats).end();
+
+    } catch (error) {
+      return next(error);
+    }
+
 });  
 
 projectRouter.get('/organization/:organization', async (req, res, next) => {

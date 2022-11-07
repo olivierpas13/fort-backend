@@ -17,10 +17,13 @@ issueRouter.post('/', async (request, response, next) => {
         }
         const issueOrg = await Organization.findOne({name: organization})
 
+        const todayDate = new Date().toString();
+
         const issue =  new Issue({
             ...request.body,
             organization: issueOrg._id,
             ticketStatus: "open",
+            createdOn: todayDate,
         })
 
         const savedIssue = await issue.save();

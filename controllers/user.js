@@ -14,6 +14,18 @@ userRouter.get('/', async (request, response) => {
   response.json(users);
 });
 
+userRouter.get('/:id', async (req, res) => {
+  
+  const { id } = req.params
+
+  console.log(id);
+
+  const user = await User.findById(id);
+
+  res.json(user).end();
+  
+});
+
 userRouter.get('/:organization', async (request, response) => {
   
   const { organization } = request.params

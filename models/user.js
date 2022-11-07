@@ -20,7 +20,6 @@ export const userSchema = new mongoose.Schema({
     enum: ['administrator', 'project-manager', 'developer', 'submitter'],
   },
   project: {
-    // type: String
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project'
   }

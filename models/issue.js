@@ -30,6 +30,9 @@ export const issueSchema = new mongoose.Schema({
     project:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Project'
+    },    
+    createdOn:{
+        type: String
     }    
 })
 
