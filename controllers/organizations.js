@@ -58,23 +58,25 @@ organizationRouter.get('/:name/allProjects/weeklyStats', async (req, res, next)=
           $lte: new Date(),
           $gte: currentDate.setDate(currentDate.getDate()-7),
           }
-      }).then(res=> res))
+      }).then(res=> {
+        return{
+          name: project.name,
+          id: project.id,
+          weeklyIssues: {
+            monday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Mon').length,
+            tuesday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Tue').length,
+            wednesday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Wed').length,
+            thursday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Thu').length,
+            friday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Fri').length,
+            saturday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Sat').length,
+            sunday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Sun').length,
+        }
+        }
+      }))
     })
   )
 
-  const allOrganizationWeekIssues = (allWeekIssues.flatMap(issue=> issue))
-
-  const weeklyStats = {
-    monday: allOrganizationWeekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Mon').length,
-    tuesday: allOrganizationWeekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Tue').length,
-    wednesday: allOrganizationWeekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Wed').length,
-    thursday: allOrganizationWeekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Thu').length,
-    friday: allOrganizationWeekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Fri').length,
-    saturday: allOrganizationWeekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Sat').length,
-    sunday: allOrganizationWeekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Sun').length,
-}
-
-  return res.json(weeklyStats).end();
+  return res.json(allWeekIssues).end();
 });
 
 export default organizationRouter;
