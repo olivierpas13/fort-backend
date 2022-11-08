@@ -38,14 +38,7 @@ userRouter.get('/:organization', async (request, response) => {
 
 userRouter.post('/', async (request, response, next) => {
   try {
-    const { name, email, password, organizationCode: organizationCodeWithRole, organization } = request.body;
-
-    const {
-       name: organizationName,
-       role,
-       orgInvitationCode: organizationCode, 
-       project
-      } = jwt.verify(organizationCodeWithRole, process.env.SECRET)
+    const { name, email, password, organization } = request.body;
 
     const saltRounds = 10;
 
@@ -57,9 +50,17 @@ userRouter.post('/', async (request, response, next) => {
 
     let savedUser;
 
-    if(organizationCode){
+    if(request.body?.organizationCode){
 
+      const {organizationCode: organizationCodeWithRole} = request.body;
 
+      const {
+        name: organizationName,
+        role,
+        orgInvitationCode: organizationCode, 
+        project
+       } = jwt.verify(organizationCodeWithRole, process.env.SECRET)
+ 
       const user = new User({
         name,
         email,
@@ -87,13 +88,13 @@ userRouter.post('/', async (request, response, next) => {
     }
 
 
-    if(!organizationCode && organization){
+    if(!request.body?.organizationCode && organization){
 
       const user = new User({
         name,
         email,
         passwordHash,
-        role: admin,
+        role: "administrator",
         organization: organization
       });
 
