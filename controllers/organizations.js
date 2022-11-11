@@ -55,7 +55,7 @@ organizationRouter.get('/:name/allProjects/weeklyStats', async (req, res, next)=
       return(Issue.find({
         project: project.id,
         createdOn: {
-          $lte: new Date(),
+          // $lte: currentDate,
           $gte: currentDate.setDate(currentDate.getDate()-7),
           }
       }).then(res=> {
