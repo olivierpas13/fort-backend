@@ -1,9 +1,9 @@
-import Router, { response } from 'express';
+import Router from 'express';
 import { ObjectId } from 'mongodb';
 
-import Issue from '../models/issue.js'
-import Organization from '../models/organization.js'
-import Project from '../models/project.js'
+import Issue from '../database/models/issue.js'
+import Organization from '../database/models/organization.js'
+import Project from '../database/models/project.js'
 
 const issueRouter = Router();
 

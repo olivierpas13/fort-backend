@@ -1,11 +1,11 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import Router, { request } from 'express';
+import Router from 'express';
 import { ObjectId } from 'mongodb';
 import { v4 as uuid } from 'uuid';
 
-import User from '../models/user.js';
-import Organization from '../models/organization.js';
+import User from '../database/models/user.js';
+import Organization from '../database/models/organization.js';
 
 const userRouter = Router();
 

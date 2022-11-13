@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import Router from 'express';
-import User from '../models/user.js';
+
+import User from '../database/models/user.js';
 
 const loginRouter = Router();
 

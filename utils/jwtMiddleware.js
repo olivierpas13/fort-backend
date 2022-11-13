@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/user.js';
+import User from '../database/models/user.js';
 
 export const tokenExtractor = (request, response, next) => {
   try {

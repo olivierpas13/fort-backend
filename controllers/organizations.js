@@ -1,41 +1,36 @@
 import Router from 'express';
-import jwt from 'jsonwebtoken';
 
-import Organization from '../models/organization.js';
-import Issue from '../models/issue.js';
+import Organization from '../database/models/organization.js';
+import organizationService from '../services/organizationService.js';
+import Issue from '../database/models/issue.js';
 
 const organizationRouter = Router();
 
-organizationRouter.get('/', async (request, response) => {
-    const organizations = await Organization.find({});
-    response.json(organizations);
-  });
+const service = new organizationService()
 
-organizationRouter.get('/:name', async (request, response, next) => {
+organizationRouter.get('/:name', async (req, res, next) => {
   try {
-    const { name } = request.params;
-    const organization = await Organization.findOne({name: name});
-    return response.json(organization);
+
+    const { name } = req.params;
+    const organization = await service.getSingleOrganization(name);
+    return res.json(organization).status(200).end();
+  
   } catch (error) {
+  
     return next(error);
+  
   }
 });
 
-organizationRouter.post('/:name/invitation/:role', async (request, response, next) => {
+organizationRouter.post('/:name/invitation/:role', async (req, res, next) => {
   try {
 
-    const { name, role } = request.params;
+    const { name, role } = req.params;
+    const { orgInvitationCode, project } = req.body;
     
-    const { orgInvitationCode, project } = request.body;
-    
-    const roleInvitationCode = jwt.sign({
-      name,
-      role,
-      orgInvitationCode,
-      project,
-    }, process.env.SECRET);
+    const invitationCode = await service.getInvitationCode({name, role, orgInvitationCode, project})
 
-    response.send(roleInvitationCode).status(200).end();
+    return res.send(invitationCode).status(200).end();
 
   } catch (error) {
     return next(error);
@@ -46,35 +41,7 @@ organizationRouter.get('/:name/allProjects/weeklyStats', async (req, res, next)=
 
   const { name } = req.params;
 
-  const organization = await Organization.findOne({name: name})
-
-  const currentDate = new Date();
-
-  const allWeekIssues = await Promise.all(
-    organization.projects.map(project=> {
-      return(Issue.find({
-        project: project.id,
-        createdOn: {
-          // $lte: currentDate,
-          $gte: currentDate.setDate(currentDate.getDate()-7),
-          }
-      }).then(res=> {
-        return{
-          name: project.name,
-          id: project.id,
-          weeklyIssues: {
-            monday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Mon').length,
-            tuesday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Tue').length,
-            wednesday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Wed').length,
-            thursday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Thu').length,
-            friday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Fri').length,
-            saturday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Sat').length,
-            sunday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Sun').length,
-        }
-        }
-      }))
-    })
-  )
+  const allWeekIssues = await service.getAllProjectsWeeklyStats(name);
 
   return res.json(allWeekIssues).end();
 });
