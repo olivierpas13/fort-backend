@@ -1,23 +1,21 @@
 import mongoose from "mongoose";
 import { projectSchema } from "./project.js";
-import { userSchema } from "./user.js";
 
 const organizationSchema = new mongoose.Schema({
     name: {
         type: String,
+        required: true,
+        unique: true,
     },
-    users:[
-        {
-            type: userSchema
-        }
-    ],
     projects: [
         {
             type: projectSchema
         }
     ],
     orgInvitationCode: {
-        type: String
+        type: String,
+        required: true,
+        unique: true,
     }
 })
 

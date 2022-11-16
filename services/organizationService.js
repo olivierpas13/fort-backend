@@ -53,6 +53,15 @@ class organizationService {
         }
     }
 
+    async createOrganization(name){
+        try {
+            const organization = await this.repository.createOrganization(name);
+            return organization;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
 }
 
 export default organizationService;

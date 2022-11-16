@@ -1,3 +1,5 @@
+import { v4 as uuid } from 'uuid';
+
 import Organization from "../models/organization.js";
 import Issue from "../models/issue.js";
 
@@ -13,9 +15,7 @@ class organizationRepository {
     
     async getLastWeekIssues(projects){
         try {
-
             const currentDate = new Date();
-            
             return await Promise.all(
                 projects.map(project=> {
                   return(Issue.find({
@@ -43,7 +43,21 @@ class organizationRepository {
 
         } catch (error) {
             console.error(error);
+          }
         }
+        
+    async createOrganization(name){
+      try {
+        const organization = new Organization({
+          name,
+          orgInvitationCode: uuid(),
+        })
+
+        return await organization.save();
+      
+      } catch (error) {
+        console.error(error);
+      }
     }
 
 }
