@@ -26,9 +26,9 @@ organizationRouter.post('/:name/invitation/:role', async (req, res, next) => {
   try {
 
     const { name, role } = req.params;
-    const { orgInvitationCode, project } = req.body;
+    const { project } = req.body;
     
-    const invitationCode = await service.getInvitationCode({name, role, orgInvitationCode, project})
+    const invitationCode = await service.getInvitationCode({name, role, project})
 
     return res.send(invitationCode).status(200).end();
 

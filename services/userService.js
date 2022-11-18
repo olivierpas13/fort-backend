@@ -29,21 +29,26 @@ class userService{
         }
 
     }
-    
+
     async createUser({name, email, password, organization, organizationCode}){
+
+        const generateError = (message, statusCode, data) => {
+            const error = new Error(message);
+            error.statusCode = statusCode;
+            error.data = data || {};
+            error.error = true;
+            return error
+        }
+
         try {
 
             const saltRounds = 10;
 
-            if (!(name && password && email )){ 
-                const error = new Error('Fields required missing')
-                error.code = 400
-                throw error
+            if (!(name && password && email )){
+                throw generateError('Fields required missing',400);
             }        
             if (!(name.length > 3) || !(password.length > 3)) {
-                const error = new Error('name and password length should be more than 3 characters')
-                error.code = 400
-                throw error
+                throw generateError('Name and password length should be more than 3 characters',400);
             }
         
             const passwordHash = await bcrypt.hash(password, saltRounds);
@@ -55,7 +60,6 @@ class userService{
               const {
                 name: organizationName,
                 role,
-                // orgInvitationCode: organizationCode, 
                 project
                } = jwt.verify(organizationCode, SECRET)
          
@@ -84,7 +88,7 @@ class userService{
 
             return savedUser;
         } catch (error) {
-            console.error(error);
+            throw error;
         }
     }
 

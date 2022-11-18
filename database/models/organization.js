@@ -12,11 +12,6 @@ const organizationSchema = new mongoose.Schema({
             type: projectSchema
         }
     ],
-    orgInvitationCode: {
-        type: String,
-        required: true,
-        unique: true,
-    }
 })
 
 /*eslint-disable*/

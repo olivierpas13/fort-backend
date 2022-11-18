@@ -36,7 +36,7 @@ class userRepository{
               return await user.save();
 
         } catch (error) {
-            console.error(error);
+            return(error);
         }
 
     }

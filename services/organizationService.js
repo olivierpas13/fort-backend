@@ -21,13 +21,12 @@ class organizationService {
         }
     }
 
-    async getInvitationCode({name, role, orgInvitationCode, project}){
+    async getInvitationCode({name, role, project}){
         try {
             
             const roleInvitationCode = jwt.sign({
                 name,
                 role,
-                orgInvitationCode,
                 project,
               }, SECRET);
             
