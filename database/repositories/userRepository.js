@@ -59,6 +59,10 @@ class userRepository{
 
     }
 
+    async updateUserOrg({id, organization}){
+        return await User.findByIdAndUpdate(id, {organization: organization}, {new: true})
+    }
+
 }
 
 export default userRepository;

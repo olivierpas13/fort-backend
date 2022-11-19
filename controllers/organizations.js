@@ -1,8 +1,6 @@
 import Router from 'express';
 
-import Organization from '../database/models/organization.js';
 import organizationService from '../services/organizationService.js';
-import Issue from '../database/models/issue.js';
 
 const organizationRouter = Router();
 

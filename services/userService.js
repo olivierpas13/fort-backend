@@ -1,10 +1,7 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-
-import { SECRET } from '../utils/config.js'
-import User from '../database/models/user.js';
 import userRepository from "../database/repositories/userRepository.js"
 import organizationRepository from "../database/repositories/organizationRepository.js"
+
+import { checkIfValidInput, getDataFromOrgCode, hashPassword } from '../utils/userUtils.js';
 
 class userService{
 
@@ -32,37 +29,22 @@ class userService{
 
     async createUser({name, email, password, organization, organizationCode}){
 
-        const generateError = (message, statusCode, data) => {
-            const error = new Error(message);
-            error.statusCode = statusCode;
-            error.data = data || {};
-            error.error = true;
-            return error
-        }
-
         try {
 
-            const saltRounds = 10;
-
-            if (!(name && password && email )){
-                throw generateError('Fields required missing',400);
-            }        
-            if (!(name.length > 3) || !(password.length > 3)) {
-                throw generateError('Name and password length should be more than 3 characters',400);
-            }
+            await checkIfValidInput({name, password, email})
         
-            const passwordHash = await bcrypt.hash(password, saltRounds);
+            const passwordHash = await hashPassword(password);
         
             let savedUser;
         
             if(organizationCode){
         
-              const {
-                name: organizationName,
-                role,
-                project
-               } = jwt.verify(organizationCode, SECRET)
-         
+                const {        
+                    organizationName,
+                    role,
+                    project,
+                } = getDataFromOrgCode(organizationCode);
+
                savedUser = await this.repository.createUser({
                 name,
                 email,
@@ -73,25 +55,37 @@ class userService{
                })
             }
         
-        
             if(!organizationCode && organization){
 
+                const newOrg = await this.organizationRepo.createOrganization(organization);        
+                
                 savedUser = await this.repository.createAdmin({
                     name,
                     email,
                     passwordHash,
-                    organization,
+                    organization: newOrg.name,
                 })
 
-                this.organizationRepo.createOrganization(organization);        
             }
 
             return savedUser;
+        
         } catch (error) {
             throw error;
         }
     }
 
+    async updateUserOrganization({id, organization}){
+
+        const user = await this.repository.updateUserOrg({id, organization});
+        const org = await this.organizationRepo.getSingleOrganization({name: organization})
+        
+        if(!org){
+            await this.organizationRepo.createOrganization(organization);
+        }
+
+        return user;
+    }
 }
 
 export default userService;

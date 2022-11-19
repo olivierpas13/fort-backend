@@ -3,7 +3,6 @@ import Router from 'express';
 import { ObjectId } from 'mongodb';
 
 import User from '../database/models/user.js';
-import Organization from '../database/models/organization.js';
 import userService from '../services/userService.js';
 
 const userRouter = Router();
@@ -37,8 +36,6 @@ userRouter.get('/organization/:organization', async (req, res) => {
   } catch (error) {
     console.error(error);    
   }
-
-
 });
 
 userRouter.post('/', async (req, res, next) => {
@@ -62,26 +59,12 @@ userRouter.post('/', async (req, res, next) => {
 
 userRouter.patch('/:id', async (req, res, next) => {
   try {
+
     const { id } = req.params;
+    
     const { body: {organization} } = req;
-    const newid = new ObjectId(id);
-    const user = await User.findByIdAndUpdate(newid, {organization: organization}, {new: true})
-    const org = await Organization.findOne({name: organization})
-    if(!org){
-      const org = new Organization({
-        name: organization,
-        users: [user]
-      })
-      org.save();
-    }
-  
-    if(org){
-      org.users = [
-        ...org.users,
-        user
-      ]
-      org.save();
-    }
+    
+    const user = await service.updateUserOrganization({id, organization});
   
     return res.json(user).status(204);
       
@@ -105,8 +88,6 @@ userRouter.patch('/:id/role', async(req, res, next)=>{
   } catch (error) {
     return next(error);
   }
-
-
 })
 
 

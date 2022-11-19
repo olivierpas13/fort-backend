@@ -2,6 +2,8 @@ import { v4 as uuid } from 'uuid';
 
 import Organization from "../models/organization.js";
 import Issue from "../models/issue.js";
+import generateError from '../../utils/customError.js';
+import { checkIfNameIsAvailable } from '../../utils/organizationUtils.js';
 
 class organizationRepository {
 
@@ -48,15 +50,19 @@ class organizationRepository {
         
     async createOrganization(name){
       try {
+
+        if(await checkIfNameIsAvailable(name)){
+          throw generateError('Organization already exists', 400)
+        };
+
         const organization = new Organization({
           name,
-          orgInvitationCode: uuid(),
         })
 
         return await organization.save();
       
       } catch (error) {
-        console.error(error);
+        throw (error);
       }
     }
 
