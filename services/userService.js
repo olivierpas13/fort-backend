@@ -10,6 +10,10 @@ class userService{
         this.repository = new userRepository()
     }
 
+    async getUserByEmail(email){
+        return await this.repository.fetchUserByEmail(email);
+    }
+
     async getUserById(id){
         try {
             return await this.repository.fetchUserById(id);

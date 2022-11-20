@@ -4,9 +4,15 @@ class userRepository{
     
     async fetchUserById(id){
         try {
-
             return await User.findById(id);
-            
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async fetchUserByEmail(email){
+        try {
+            return await User.findOne({email});
         } catch (error) {
             console.error(error);
         }
