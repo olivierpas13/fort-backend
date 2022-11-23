@@ -90,6 +90,10 @@ class userService{
 
         return user;
     }
+
+    async getAllUsersCountByProject(project){
+        return await this.repository.getUsersCountFromProject(project);
+    }
 }
 
 export default userService;

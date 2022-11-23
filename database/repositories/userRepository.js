@@ -69,6 +69,10 @@ class userRepository{
         return await User.findByIdAndUpdate(id, {organization: organization}, {new: true})
     }
 
+    async getUsersCountFromProject(project){
+        return await User.countDocuments({project})
+    }
+
 }
 
 export default userRepository;

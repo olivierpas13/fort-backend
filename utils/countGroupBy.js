@@ -1,4 +1,4 @@
-const groupBy = (data, key) => {
+const countGroupBy = (data, key) => {
     return data.reduce((storage, item) => {
         let group = item[key];
         storage[group] = storage[group] || [];
@@ -7,4 +7,4 @@ const groupBy = (data, key) => {
     }, {});
   };
 
-  export default groupBy;
+  export default countGroupBy;

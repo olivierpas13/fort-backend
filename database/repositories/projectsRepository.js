@@ -7,6 +7,10 @@ class projectsRepository{
             {$push: {issues: issue}},
             {new: true})
     }
+
+    async fetchProjectById(id){
+        return await Project.findById(id);
+    }
 }
 
 export default projectsRepository;

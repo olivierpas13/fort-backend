@@ -1,26 +1,24 @@
-import Router, { response } from 'express';
+import Router from 'express';
 import { ObjectId } from 'mongodb';
 
 import Organization from '../database/models/organization.js';
 import Project from '../database/models/project.js';
 import User from '../database/models/user.js';
+import projectsService from '../services/projectsService.js';
 
 const projectRouter = Router();
 
-projectRouter.get('/', async (request, response) => {
-    const projects = await Project.find({});
-    response.json(projects);
-  });
+const service = new projectsService();
 
-projectRouter.get('/:id', async (request, response, next) => {
+projectRouter.get('/:id', async (req, res, next) => {
   try {
     
-    const { id } = request.params;
+    const { id } = req.params;
     
-    const project = await Project.findById(id);
+    const project = await service.getProjectById(id);
     
-    return response.json(project);
-  
+    return res.json(project);
+
 } catch (error) {
 
     return next(error);
@@ -30,25 +28,10 @@ projectRouter.get('/:id', async (request, response, next) => {
 
 projectRouter.get('/:id/stats', async (req, res, next) => {
     try {
+        const { id } = req.params;
 
-      const { id } = req.params;
-
-      const project = await Project.findById(id);
-      
-      const users = await User.countDocuments({project: id})
-
-      const projectStats = {
-        projectName: project.name,
-        projectIssues: project.issues.length,
-        users,
-        highPriorityIssues: project.issues.filter(issue=> issue.priority === 'high').length,
-        mediumPriorityIssues: project.issues.filter(issue=> issue.priority === 'medium').length,
-        lowPriorityIssues: project.issues.filter(issue=> issue.priority === 'low').length,
-        openIssues: project.issues.filter(issue=> issue.ticketStatus === 'open').length,
-        closedIssues: project.issues.filter(issue=> issue.ticketStatus === 'closed').length,
-      }
-
-      return res.json(projectStats).end();
+        const projectStats  = await service.getProjectStats(id);
+        return res.json(projectStats).end();
     } catch (error) {
       return next(error);
     }
@@ -142,7 +125,7 @@ projectRouter.post('/', async (req, res, next) =>{
 
 projectRouter.patch('/:id', async (req, res, next) =>{
     try {
-        const { id } = request.params;
+        const { id } = req.params;
         const { issue } =  req.body;
         const newid = new ObjectId(id);
         
@@ -164,7 +147,7 @@ projectRouter.patch('/:id', async (req, res, next) =>{
 
         currentOrganization.save();
 
-        return response.json(savedProject).status(204);
+        return res.json(savedProject).status(204);
 
     } catch (error) {
         return next(error);

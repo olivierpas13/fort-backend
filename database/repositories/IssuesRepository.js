@@ -1,5 +1,5 @@
 import Issue from "../models/issue.js";
-import groupBy from "../../utils/countGroupBy.js";
+import countGroupBy from "../../utils/countGroupBy.js";
 
 class issuesRepository {
 
@@ -48,7 +48,7 @@ class issuesRepository {
     }
 
     async getIndividualProjectsIssuesCount(issues){
-          return groupBy(issues, "project")
+          return countGroupBy(issues, "project")
     }
 }
 
