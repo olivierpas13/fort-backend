@@ -1,46 +1,22 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
 import Router from 'express';
-
-import User from '../database/models/user.js';
+import loginService from '../services/loginService.js';
 
 const loginRouter = Router();
 
-loginRouter.post('/', async (request, response) => {
-  const { email,  password } = request.body;
+const service = new loginService()
 
-  if(!email || !password){
-    return response.status(400).json('Fields missing');
+loginRouter.post('/', async (req, res) => {
+
+  try {
+    
+    const { email,  password } = req.body;
+  
+    const loggedUser = await service.login({email, password});
+  
+    return res.send(loggedUser).status(200);
+  } catch (error) {
+    throw error;
   }
-
-  const user = await User.findOne({ email });
-
-  const passwordCorrect = user === null
-    ? false
-    : await bcrypt.compare(password, user.passwordHash);
-
-  if (!(user && passwordCorrect)) {
-    return response.status(401).json({
-      error: 'Invalid username or password',
-    });
-  }
-
-/*  eslint-disable  */
-
-  const userForToken = {
-    name: user.name,
-    email: user.email,
-    organization: user.organization,
-    id: user._id,
-  };
-
-  /*  eslint-enable */
-
-  const token = jwt.sign(userForToken, process.env.SECRET);
-
-  return response
-    .status(200)
-    .send({ token, name: user.name, email: user.email, organization: user.organization, id: user._id });
 });
 
 export default loginRouter;

@@ -1,4 +1,5 @@
 import Issue from "../models/issue.js";
+import groupBy from "../../utils/countGroupBy.js";
 
 class issuesRepository {
 
@@ -22,41 +23,32 @@ class issuesRepository {
         return await Issue.find({organization});
     }
 
-    async getIssuesByPriority(organization){
+    getIssuesByPriority(issues){
         
-        const highPriorityIssues = await Issue.countDocuments({priority: "high", organization: organization})
-        const mediumPriorityIssues = await Issue.countDocuments({priority: "medium", organization: organization})
-        const lowPriorityIssues = await Issue.countDocuments({priority: "low", organization: organization})
+        const highPriorityIssues = issues.filter(issue => issue.priority === 'high').length 
+        const mediumPriorityIssues = issues.filter(issue => issue.priority === 'medium').length
+        const lowPriorityIssues = issues.filter(issue => issue.priority === 'low').length
 
         return {
             highPriorityIssues,
             mediumPriorityIssues,
             lowPriorityIssues,
         }
-    
     }
 
-    async getIssuesByStatus(organization){
-        const openIssues = await Issue.countDocuments({ticketStatus: "open", organization: organization})
-        const closedIssues = await Issue.countDocuments({ticketStatus: "closed", organization: organization})
+    getIssuesByStatus(issues){
+        
+        const openIssues = issues.filter(issue => issue.ticketStatus === 'open').length
+        const closedIssues = issues.filter(issue => issue.ticketStatus === 'closed').length
+        
         return{
             openIssues,
             closedIssues,
         }
     }
 
-    async getIndividualProjectsIssuesCount(organization){
-        const projectsIssues = await Promise.all(
-            organization.projects.map(pr => {
-              return(Issue.countDocuments({project: pr._id}).then(res => {return({
-                projectName: pr.name,
-                projectId: pr._id,
-                projectIssues: res,
-            })}));
-            })
-          );
-          
-        return projectsIssues;
+    async getIndividualProjectsIssuesCount(issues){
+          return groupBy(issues, "project")
     }
 }
 

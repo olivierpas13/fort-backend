@@ -36,6 +36,7 @@ class issuesService {
     }
 
     async getAllOrganizationIssues(organization){
+    
         const org = await this.orgService.getSingleOrganization(organization)
     
         return await this.repository.findIssuesByOrganization(org._id)
@@ -43,26 +44,26 @@ class issuesService {
 
     async getAllOrganizationIssuesStats(organization){
     
-        const org = await this.orgService.getSingleOrganization(organization);
-    
+        const issues = await this.getAllOrganizationIssues(organization)
+        
        // Priority
 
-       const {
-        highPriorityIssues,
-        mediumPriorityIssues,
-        lowPriorityIssues,
-        } = await this.repository.getIssuesByPriority(organization._id)
+        const {
+            highPriorityIssues,
+            mediumPriorityIssues,
+            lowPriorityIssues,
+        } = this.repository.getIssuesByPriority(issues);
        
        // Status
        
-       const {
-        openIssues, 
-        closedIssues,         
-       } = await this.repository.getIssuesByStatus(organization._id)
+        const {
+            openIssues,
+            closedIssues,
+        } = this.repository.getIssuesByStatus(issues)
 
        // Project individual issues count
 
-       const projectsIssues = await this.repository.getIndividualProjectsIssuesCount(organization)
+       const projectsIssues = await this.repository.getIndividualProjectsIssuesCount(issues)
     
          const stats = {
             highPriorityIssues,
