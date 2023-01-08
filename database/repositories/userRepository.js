@@ -26,16 +26,16 @@ class userRepository{
         }
     }
 
-    async createUser({name, email, role, passwordHash, organizationName, project}){
+    async createUser({name, email, role, passwordHash, organizationName, organizationId, project}){
     
         try {
-            
             const user = new User({
                 name,
                 email,
                 role,
                 passwordHash,
                 organization: organizationName,
+                organizationId,
                 project: project.length === 0? null: project
               });
         
@@ -47,17 +47,19 @@ class userRepository{
 
     }
 
-    async createAdmin({name, email, passwordHash, organization}){
+    async createAdmin({name, email, passwordHash, organization, organizationId}){
         try {
             const user = new User({
                 name,
                 email,
                 passwordHash,
                 role: "administrator",
-                organization: organization
+                organization: organization,
+                organizationId,
               });
     
             const savedUser = await user.save();
+            
             return savedUser;
         } catch (error) {
             console.error(error);            

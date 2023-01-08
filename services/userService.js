@@ -45,6 +45,7 @@ class userService{
         
                 const {        
                     organizationName,
+                    organizationId,
                     role,
                     project,
                 } = getDataFromOrgCode(organizationCode);
@@ -55,6 +56,7 @@ class userService{
                 role,
                 passwordHash,
                 organizationName,
+                organizationId,
                 project,
                })
             }
@@ -68,8 +70,8 @@ class userService{
                     email,
                     passwordHash,
                     organization: newOrg.name,
+                    organizationId: newOrg._id,
                 })
-
             }
 
             return savedUser;

@@ -11,6 +11,10 @@ class projectsRepository{
     async fetchProjectById(id){
         return await Project.findById(id);
     }
+
+    async fetchProjectsByOrganization(organization){
+        return await Project.find({organization});
+    }
 }
 
 export default projectsRepository;

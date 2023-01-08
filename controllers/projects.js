@@ -60,7 +60,7 @@ projectRouter.get('/organization/:organization', async (req, res, next) => {
 
         const { organization } = req.params;
     
-        const projects = await Project.find({organization: organization});
+        const projects = await service.getProjectsByOrganization(organization);
 
         return res.json(projects).status(200).end();
 
@@ -72,23 +72,8 @@ projectRouter.get('/organization/:organization', async (req, res, next) => {
 projectRouter.post('/', async (req, res, next) =>{
     try {
         const {name, organization} = req.body;
-        if(!name || !organization){
-            return res.json({error: 'Required fields missing'}).status(400).end();
-        }
-
-        let currentOrganization =  await Organization.findOne({
-            name: organization
-        })
         
-        const project = new Project({
-            name,
-            organization: currentOrganization._id,
-            issues: []
-        })
-        
-        const savedProject = await project.save();
-        
-        await Organization.findOneAndUpdate({name: organization}, {projects: currentOrganization.projects.concat(savedProject)}, {new: true})
+        const savedProject = await service.createProject({name, organization});
 
         return res.json(savedProject).status(201).end();
 

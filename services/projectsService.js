@@ -1,8 +1,7 @@
 import projectsRepository from "../database/repositories/projectsRepository.js"
 import userService from "./userService.js";
 import { organizeProjectIssues } from "../utils/projectsUtils.js";
-
-import Issue from "../database/models/issue.js";
+import generateError from "../utils/customError.js";
 
 class projectsService{
     constructor(){
@@ -51,32 +50,18 @@ class projectsService{
 
         // Using the issues array inside the project
 
-        // const weekIssues = project.issues.filter(issue=>{
-        //     const time = new Date(issue.createdOn).getTime(); 
-        //     return(time > currentDate.getDate()-7)
-        // });
-
-        // {
-        //     "monday": 0,
-        //     "tuesday": 3,
-        //     "wednesday": 5,
-        //     "thursday": 0,
-        //     "friday": 1,
-        //     "saturday": 0,
-        //     "sunday": 0
-        // }
-
-        // console.log(weekIssues);
+        const weekIssues = project.issues.filter(issue=>{
+            const time = new Date(issue.createdOn).getTime(); 
+            return(time > currentDate.getDate()-7)
+        });
 
         // Using a query for the weekly issues of an specific project
 
-        const weekIssues = await Issue.find({
-            project: id,
-            createdOn: {
-                $gte: currentDate.setDate(currentDate.getDate()-7),
-        }})
-
-        console.log(weekIssues);
+        // const weekIssues = await Issue.find({
+        //     project: id,
+        //     createdOn: {
+        //         $gte: currentDate.setDate(currentDate.getDate()-7),
+        // }})
 
       const weeklyStats = {
         monday: weekIssues.filter(issue => issue.createdOn.split(' ')[0] === 'Mon').length,
@@ -89,6 +74,32 @@ class projectsService{
     }
 
     return weeklyStats;
+
+    }
+
+    async getProjectsByOrganization(organization){
+        return await this.repository.fetchProjectsByOrganization(organization);
+    }
+
+    async createProject({name, organization}){
+
+        if(!name || !organization){
+            throw generateError('Required fields missing', 400);
+        }
+
+        let currentOrganization = await Organization.findOne({
+            name: organization
+        })
+        
+        const project = new Project({
+            name,
+            organization: currentOrganization._id,
+            issues: []
+        })
+        
+        const savedProject = await project.save();
+        
+        await Organization.findOneAndUpdate({name: organization}, {projects: currentOrganization.projects.concat(savedProject)}, {new: true})
 
     }
 }
