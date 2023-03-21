@@ -3,9 +3,6 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import { MONGODB_URI } from './utils/config.js';
 
-
-// const blogRouter = require('./controllers/blog');
-// const testingRouter = require('./controllers/testing');
 import loginRouter from './controllers/login.js';
 import userRouter from './controllers/user.js';
 import organizationRouter from './controllers/organizations.js'
@@ -40,11 +37,6 @@ app.use('/api/organization', organizationRouter);
 app.use('/api/projects', projectsRouter);
 app.use('/api/users', userRouter);
 app.use('/api/issues', issuesRouter);
-
-// if (process.env.NODE_ENV === 'test') {
-/* eslint-disable */
-  /* eslint-enable */
-// }
 
 app.get('/health', (req, res) => {
   res.send('ok');
