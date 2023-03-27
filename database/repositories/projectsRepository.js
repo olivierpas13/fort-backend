@@ -1,10 +1,18 @@
 import Project from "../models/project.js";
 
 class projectsRepository{
+    
     async addIssueToProject({id, issue}){
         await Project.findByIdAndUpdate(
             id,
             {$push: {issues: issue}},
+            {new: true})
+    }
+
+    async addUserToProject({id, user}){
+        await Project.findByIdAndUpdate(
+            id,
+            {$push: {users: user}},
             {new: true})
     }
 
@@ -14,6 +22,20 @@ class projectsRepository{
 
     async fetchProjectsByOrganization(organization){
         return await Project.find({organization});
+    }
+
+    async createNewProject({name, organization}){
+        try {
+            const project = new Project({
+                name,
+                organization,
+                issues:[],
+              })
+      
+              return await project.save();
+        } catch (error) {
+            throw(error);
+        };
     }
 }
 

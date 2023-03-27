@@ -1,6 +1,20 @@
 import mongoose from "mongoose";
 import { issueSchema } from "./issue.js";
 
+const simpleUser = new mongoose.Schema({
+    name: {
+        type: String
+    },
+    id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    role: {
+      type: String,
+      enum: ['administrator', 'project-manager', 'developer', 'submitter'],
+    },
+})
+
 export const projectSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -11,6 +25,9 @@ export const projectSchema = new mongoose.Schema({
     },
     issues:[{
         type: issueSchema,
+    }],
+    users: [{
+      type: simpleUser,  
     }]
 })
 

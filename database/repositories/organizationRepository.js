@@ -66,6 +66,14 @@ class organizationRepository {
       }
     }
 
+    async updateOrganizationProjects({name, project}){
+      return await Organization.updateOne(
+        {name: name},
+        {$push: {projects: project}},
+        {new: true},
+      );
+    }
+
 }
 
 export default organizationRepository;

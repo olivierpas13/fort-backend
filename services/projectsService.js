@@ -1,5 +1,6 @@
 import projectsRepository from "../database/repositories/projectsRepository.js"
 import userService from "./userService.js";
+import organizationService from "./organizationService.js";
 import { organizeProjectIssues } from "../utils/projectsUtils.js";
 import generateError from "../utils/customError.js";
 
@@ -7,6 +8,7 @@ class projectsService{
     constructor(){
         this.repository = new projectsRepository()
         this.userService = new userService();
+        this.organizationService = new organizationService();
     }
     async addIssueToProject({id, issue}){
         return await this.repository.addIssueToProject({id, issue})
@@ -87,20 +89,15 @@ class projectsService{
             throw generateError('Required fields missing', 400);
         }
 
-        let currentOrganization = await Organization.findOne({
-            name: organization
-        })
+        let currentOrganization = await this.organizationService.getSingleOrganization(organization)
         
-        const project = new Project({
-            name,
-            organization: currentOrganization._id,
-            issues: []
-        })
-        
-        const savedProject = await project.save();
-        
-        await Organization.findOneAndUpdate({name: organization}, {projects: currentOrganization.projects.concat(savedProject)}, {new: true})
+        console.log(currentOrganization);
 
+        const savedProject = await this.repository.createNewProject({name, organization: currentOrganization._id});
+
+        await this.organizationService.updateOrganizationProjects({name: organization, project: savedProject});
+
+        return savedProject;
     }
 }
 

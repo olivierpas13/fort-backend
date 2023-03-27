@@ -1,7 +1,13 @@
 import User from "../models/user.js";
+import projectsRepository from "./projectsRepository.js";
+
 
 class userRepository{
     
+    constructor(){
+        this.projectsRepo = new projectsRepository();
+    }
+
     async fetchUserById(id){
         try {
             return await User.findById(id);
@@ -36,10 +42,21 @@ class userRepository{
                 passwordHash,
                 organization: organizationName,
                 organizationId,
-                project: project.length === 0? null: project
+                project,
               });
         
-              return await user.save();
+              const savedUser = await user.save();
+              await this.projectsRepo.addUserToProject({
+                id: project,
+                user: {
+                    name,
+                    id: savedUser._id,
+                    role,
+                }
+              })
+
+
+              return savedUser;
 
         } catch (error) {
             return(error);

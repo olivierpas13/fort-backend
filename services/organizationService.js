@@ -16,7 +16,7 @@ class organizationService {
         
         } catch (error) {
             
-            console.error(error);
+            throw(error);
 
         }
     }
@@ -59,6 +59,10 @@ class organizationService {
         } catch (error) {
             console.error(error);
         }
+    }
+
+    async updateOrganizationProjects({name, project}){
+        return await this.repository.updateOrganizationProjects({name, project})
     }
 
 }

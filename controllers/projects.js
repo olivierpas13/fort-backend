@@ -3,7 +3,6 @@ import { ObjectId } from 'mongodb';
 
 import Organization from '../database/models/organization.js';
 import Project from '../database/models/project.js';
-import User from '../database/models/user.js';
 import projectsService from '../services/projectsService.js';
 
 const projectRouter = Router();
