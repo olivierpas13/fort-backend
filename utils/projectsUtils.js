@@ -1,12 +1,13 @@
 import countGroupBy from "./countGroupBy.js"
 
 export const organizeProjectIssues = (issues) =>{
-    
+
     const priority = (countGroupBy(issues, 'priority'));
     
     const status = (countGroupBy(issues, 'ticketStatus'));
     
     return{
+        totalIssues: issues?.length,
         highPriorityIssues : priority?.high ? priority.high : 0,
         mediumPriorityIssues : priority?.medium ? priority.medium : 0 ,
         lowPriorityIssues : priority?.low? priority.low : 0 ,

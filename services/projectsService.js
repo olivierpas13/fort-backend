@@ -24,6 +24,7 @@ class projectsService{
         const users = await this.userService.getAllUsersCountByProject(project.id)
   
         const {
+            totalIssues,
             highPriorityIssues,
             mediumPriorityIssues,
             lowPriorityIssues,
@@ -33,6 +34,7 @@ class projectsService{
         
         const projectStats = {
           projectName: project.name,
+          totalIssues,
           projectIssues: project.issues.length,
           users,
           highPriorityIssues,

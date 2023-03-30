@@ -32,8 +32,11 @@ export const issueSchema = new mongoose.Schema({
         ref: 'Project'
     },    
     createdOn:{
-        type: String
-    }    
+        type: String,
+    },
+    projectTitle:{
+        type: String,
+    }   
 })
 
 /*eslint-disable*/

@@ -11,9 +11,9 @@ class issuesService {
         this.projectService = new projectsService();
     }
 
-    async createIssue({title, priority, assignedDev, organization, submitter, project}){
+    async createIssue({title, priority, assignedDev, organization, submitter, project, projectTitle}){
 
-        checkIfValidIssueInput({title, priority, assignedDev, organization, submitter, project});
+        checkIfValidIssueInput({title, priority, assignedDev, organization, submitter, project, projectTitle});
 
         const org = await this.orgService.getSingleOrganization(organization);
 
@@ -27,7 +27,8 @@ class issuesService {
             ticketStatus: "open",
             createdOn: todayDate,
             submitter,
-            project
+            project,
+            projectTitle
         })
 
         await this.projectService.addIssueToProject({id: project, issue})
@@ -66,6 +67,7 @@ class issuesService {
        const projectsIssues = await this.repository.getIndividualProjectsIssuesCount(issues)
     
          const stats = {
+            totalIssues: issues.length,
             highPriorityIssues,
             mediumPriorityIssues,
             lowPriorityIssues,

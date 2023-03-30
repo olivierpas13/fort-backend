@@ -1,7 +1,5 @@
 import Router from 'express';
 
-import Issue from '../database/models/issue.js'
-import Organization from '../database/models/organization.js'
 import issuesService from '../services/issuesService.js';
 
 const issueRouter = Router();
@@ -12,9 +10,9 @@ const service = new issuesService();
 
 issueRouter.post('/', async (request, response, next) => {
     try {
-        const {title, priority, assignedDev, organization, submitter, project} = request.body;
+        const {title, priority, assignedDev, organization, submitter, project, projectTitle} = request.body;
 
-        const issue = await service.createIssue({title, priority, assignedDev, organization, submitter, project})  
+        const issue = await service.createIssue({title, priority, assignedDev, organization, submitter, project, projectTitle})  
 
         return response.json(issue).status(201).end();
 

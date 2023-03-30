@@ -1,9 +1,10 @@
 import Issue from "../models/issue.js";
-import countGroupBy from "../../utils/countGroupBy.js";
+import countProjectIssues from "../../utils/countProjectIssues.js";
 
 class issuesRepository {
 
-    async createIssue({title, priority, assignedDev, organization, submitter, project, ticketStatus, createdOn}){
+
+    async createIssue({title, priority, assignedDev, organization, submitter, project, ticketStatus, createdOn, projectTitle}){
 
         const issue = new Issue({
             title,
@@ -13,7 +14,8 @@ class issuesRepository {
             ticketStatus,
             createdOn,
             submitter,
-            project
+            project,
+            projectTitle,
         })
 
         return await issue.save();
@@ -48,7 +50,9 @@ class issuesRepository {
     }
 
     async getIndividualProjectsIssuesCount(issues){
-          return countGroupBy(issues, "project")
+        const group = countProjectIssues(issues, "projectTitle")
+        console.log(group);
+          return group;
     }
 }
 
