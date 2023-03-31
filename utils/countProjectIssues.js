@@ -13,7 +13,7 @@ function getRandomColor() {
   
       if (!acc.hasOwnProperty(projectTitle)) {
         acc[projectTitle] = {
-          name: projectTitle,
+          title: projectTitle,
           value: 0,
           color: getRandomColor(),
         };

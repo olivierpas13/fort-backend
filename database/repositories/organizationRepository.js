@@ -29,6 +29,7 @@ class organizationRepository {
                     return{
                       name: project.name,
                       id: project.id,
+                      logo: project.logo,
                       weeklyIssues: {
                         monday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Mon').length,
                         tuesday: res.filter(issue => issue.createdOn.split(' ')[0] === 'Tue').length,

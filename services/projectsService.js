@@ -85,9 +85,9 @@ class projectsService{
         return await this.repository.fetchProjectsByOrganization(organization);
     }
 
-    async createProject({name, organization}){
+    async createProject({name, organization, logo}){
 
-        if(!name || !organization){
+        if(!name || !organization || !logo){
             throw generateError('Required fields missing', 400);
         }
 
@@ -95,7 +95,7 @@ class projectsService{
         
         console.log(currentOrganization);
 
-        const savedProject = await this.repository.createNewProject({name, organization: currentOrganization._id});
+        const savedProject = await this.repository.createNewProject({name, organization: currentOrganization._id, logo});
 
         await this.organizationService.updateOrganizationProjects({name: organization, project: savedProject});
 

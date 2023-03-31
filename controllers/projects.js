@@ -70,9 +70,9 @@ projectRouter.get('/organization/:organization', async (req, res, next) => {
 
 projectRouter.post('/', async (req, res, next) =>{
     try {
-        const {name, organization} = req.body;
+        const {name, organization, logo} = req.body;
         
-        const savedProject = await service.createProject({name, organization});
+        const savedProject = await service.createProject({name, organization, logo});
 
         return res.json(savedProject).status(201).end();
 

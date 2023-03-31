@@ -28,7 +28,10 @@ export const projectSchema = new mongoose.Schema({
     }],
     users: [{
       type: simpleUser,  
-    }]
+    }],
+    logo: { // Add the logo field to the schema
+      type: String,
+    },
 })
 
 /*eslint-disable*/

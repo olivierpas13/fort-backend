@@ -24,11 +24,12 @@ class projectsRepository{
         return await Project.find({organization});
     }
 
-    async createNewProject({name, organization}){
+    async createNewProject({name, organization, logo}){
         try {
             const project = new Project({
                 name,
                 organization,
+                logo,
                 issues:[],
               })
       
