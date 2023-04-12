@@ -5,7 +5,7 @@ export const issueSchema = new mongoose.Schema({
         type: String,
     },
     description:{
-        type: String
+        type: String,
     },
     priority:{
         type: String,

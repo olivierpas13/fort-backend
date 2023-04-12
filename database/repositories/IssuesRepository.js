@@ -3,22 +3,10 @@ import countProjectIssues from "../../utils/countProjectIssues.js";
 
 class issuesRepository {
 
+    async createIssue(issue){
 
-    async createIssue({title, priority, assignedDev, organization, submitter, project, ticketStatus, createdOn, projectTitle}){
-
-        const issue = new Issue({
-            title,
-            priority,
-            assignedDev,
-            organization,
-            ticketStatus,
-            createdOn,
-            submitter,
-            project,
-            projectTitle,
-        })
-
-        return await issue.save();
+        const createdIssue = new Issue(issue);
+        return await createdIssue.save();
     }
 
     async findIssuesByOrganization(organization){

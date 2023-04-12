@@ -10,9 +10,8 @@ const service = new issuesService();
 
 issueRouter.post('/', async (request, response, next) => {
     try {
-        const {title, priority, assignedDev, organization, submitter, project, projectTitle} = request.body;
-
-        const issue = await service.createIssue({title, priority, assignedDev, organization, submitter, project, projectTitle})  
+        
+        const issue = await service.createIssue(request.body);
 
         return response.json(issue).status(201).end();
 

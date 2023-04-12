@@ -11,29 +11,24 @@ class issuesService {
         this.projectService = new projectsService();
     }
 
-    async createIssue({title, priority, assignedDev, organization, submitter, project, projectTitle}){
+    async createIssue(issue){
 
-        checkIfValidIssueInput({title, priority, assignedDev, organization, submitter, project, projectTitle});
+        checkIfValidIssueInput(issue);
 
-        const org = await this.orgService.getSingleOrganization(organization);
+        const org = await this.orgService.getSingleOrganization(issue.organization);
 
         const todayDate = new Date().toString();
 
-        const issue = await this.repository.createIssue({
-            title,
-            priority,
-            assignedDev,
+        const createdIssue = await this.repository.createIssue({
+            ...issue,
             organization: org._id,
             ticketStatus: "open",
             createdOn: todayDate,
-            submitter,
-            project,
-            projectTitle
         })
 
-        await this.projectService.addIssueToProject({id: project, issue})
+        await this.projectService.addIssueToProject({id: issue.project, createdIssue})
     
-        return issue;
+        return createdIssue;
     }
 
     async getAllOrganizationIssues(organization){
