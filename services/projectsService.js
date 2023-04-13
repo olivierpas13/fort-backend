@@ -3,6 +3,8 @@ import userService from "./userService.js";
 import organizationService from "./organizationService.js";
 import { organizeProjectIssues } from "../utils/projectsUtils.js";
 import generateError from "../utils/customError.js";
+import createIssueEditQuery from "../utils/createIssueEditQuery.js"
+
 
 class projectsService{
     constructor(){
@@ -12,6 +14,22 @@ class projectsService{
     }
     async addIssueToProject({id, issue}){
         return await this.repository.addIssueToProject({id, issue})
+    }
+
+    async closeIssueInProject({projectId, issueId}){
+        
+        // const updateQuery = createIssueEditQuery({
+        //     ticketStatus: "closed"
+        // });
+
+        return await this.repository.updateIssueInProject({
+            projectId,
+            issueId,
+            updatedFields:{
+                ticketStatus: "closed"
+            }
+            // updateQuery,
+        })
     }
 
     async getProjectById(id){

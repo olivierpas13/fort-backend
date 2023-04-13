@@ -1,13 +1,32 @@
 import Project from "../models/project.js";
-
 class projectsRepository{
     
     async addIssueToProject({id, issue}){
-        await Project.findByIdAndUpdate(
+        return await Project.findByIdAndUpdate(
             id,
             {$push: {issues: issue}},
             {new: true})
     }
+
+    async updateIssueInProject({projectId, issueId, updatedFields}){
+
+        const project = await Project.findById(projectId);
+
+        if (!project) {
+          throw new Error('No matching project found')
+        }
+        
+        const issue = project.issues.id(issueId);
+        
+        if (!issue) {
+          throw new Error('No matching issue found')
+        }
+
+        Object.assign(issue, updatedFields);
+
+        const updatedProject = await project.save();
+            return updatedProject;
+    };
 
     async addUserToProject({id, user}){
         await Project.findByIdAndUpdate(

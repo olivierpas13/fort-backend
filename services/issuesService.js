@@ -26,13 +26,27 @@ class issuesService {
             createdOn: todayDate,
         })
 
-        await this.projectService.addIssueToProject({id: issue.project, createdIssue})
+        await this.projectService.addIssueToProject({id: issue.project, issue: createdIssue})
     
         return createdIssue;
     }
 
     async closeIssue(issue){
-        return await this.repository.closeIssue(issue);
+        
+        const closedIssue = await this.repository.closeIssue(issue);
+        
+        if(closedIssue){
+
+            await this.projectService.closeIssueInProject({
+                projectId: closedIssue.project,
+                issueId: closedIssue.id
+            })
+    
+            return closedIssue
+        }
+
+        throw new Error("Unable to close the specified issue")
+
     }
 
     async deleteIssue(id){
