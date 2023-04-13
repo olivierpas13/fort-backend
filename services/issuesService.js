@@ -26,21 +26,57 @@ class issuesService {
             createdOn: todayDate,
         })
 
-        await this.projectService.addIssueToProject({id: issue.project, createdIssue})
+        await this.projectService.addIssueToProject({id: issue.project, issue: createdIssue})
     
         return createdIssue;
     }
 
     async closeIssue(issue){
-        return await this.repository.closeIssue(issue);
+        
+        const closedIssue = await this.repository.closeIssue(issue);
+        
+        if(closedIssue){
+
+            await this.projectService.closeIssueInProject({
+                projectId: closedIssue.project,
+                issueId: closedIssue.id
+            })
+    
+            return closedIssue
+        }
+
+        throw new Error("Unable to close the specified issue")
+
     }
 
     async deleteIssue(id){
-        return await this.repository.deleteIssue(id);
+        const deletedIssue = await this.repository.deleteIssue(id);
+        
+        if(deletedIssue){
+            await this.projectService.deleteIssueInProject({
+                projectId: deletedIssue.project,
+                issueId: deletedIssue.id
+            })
+        }
+
+        return deletedIssue
     }
 
     async editIssue({id, fields}){
-        return await this.repository.editIssue({id, fields})
+
+        const editedIssue = await this.repository.editIssue({id, fields})
+        
+        if(editedIssue){
+
+            await this.projectService.editIssueInProject({
+                projectId: editedIssue.project,
+                issueId: editedIssue.id,
+                fields,
+            })
+        }
+
+
+        return editedIssue;
     }
 
     async getAllOrganizationIssues(organization){

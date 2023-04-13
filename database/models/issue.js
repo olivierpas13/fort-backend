@@ -25,7 +25,7 @@ export const issueSchema = new mongoose.Schema({
     },
     ticketStatus:{
         type: String,
-        enum: ['open', 'close']
+        enum: ['open', 'closed']
     },
     project:{
         type: mongoose.Schema.Types.ObjectId,
