@@ -35,6 +35,10 @@ class issuesService {
         return await this.repository.closeIssue(issue);
     }
 
+    async deleteIssue(id){
+        return await this.repository.deleteIssue(id);
+    }
+
     async editIssue({id, fields}){
         return await this.repository.editIssue({id, fields})
     }

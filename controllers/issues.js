@@ -29,7 +29,7 @@ issueRouter.patch('/close/:id', async (req, res, next) => {
         
         const issue = await service.closeIssue(id);
         
-        return res.json(issue).status(201).end();
+        return res.json(issue).status(200).end();
         
     } catch (error) {
         return next(error);
@@ -47,7 +47,26 @@ issueRouter.patch('/edit/:id', async (req, res, next) => {
             fields: req.body
         });
 
-        return res.json(issue).status(201).end();
+        return res.json(issue).status(200).end();
+
+    } catch (error) {
+        return next(error);
+    }
+});
+
+// Delete issue
+
+issueRouter.delete('/delete/:id', async (req, res, next) => {
+    try {
+
+        const {id} = req.params;
+
+        const issue = await service.deleteIssue(id);
+
+        if(issue !== null){
+            return res.json(issue).status(204).end();
+        }
+        throw new Error("There was a problem while deleting the issue, check if the id is valid");
 
     } catch (error) {
         return next(error);

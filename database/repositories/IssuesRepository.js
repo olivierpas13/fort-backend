@@ -18,6 +18,10 @@ class issuesRepository {
         return closedIssue;
     }
 
+    async deleteIssue(id){
+        return await Issue.findByIdAndDelete(id);
+    }
+
     async editIssue({id, fields}){
         const editedIssue = await Issue.findByIdAndUpdate(
             id,
