@@ -31,6 +31,10 @@ class issuesService {
         return createdIssue;
     }
 
+    async closeIssue(issue){
+        return await this.repository.closeIssue(issue);
+    }
+
     async getAllOrganizationIssues(organization){
     
         const org = await this.orgService.getSingleOrganization(organization)

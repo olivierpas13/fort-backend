@@ -8,18 +8,33 @@ const service = new issuesService();
 
 // Create an issue
 
-issueRouter.post('/', async (request, response, next) => {
+issueRouter.post('/', async (req, res, next) => {
     try {
         
-        const issue = await service.createIssue(request.body);
+        const issue = await service.createIssue(req.body);
 
-        return response.json(issue).status(201).end();
+        return res.json(issue).status(201).end();
 
     } catch (error) {
         return next(error);
     }
 });
 
+// Edit issue
+
+issueRouter.patch('/close/:id', async (req, res, next) => {
+    try {
+
+        const {id} = req.params;
+
+        const issue = await service.closeIssue(id);
+
+        return res.json(issue).status(201).end();
+
+    } catch (error) {
+        return next(error);
+    }
+});
 // Get the organization's issues
 
 issueRouter.get('/:orgName', async (req, res, next) =>{

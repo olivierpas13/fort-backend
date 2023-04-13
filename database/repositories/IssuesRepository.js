@@ -9,6 +9,16 @@ class issuesRepository {
         return await createdIssue.save();
     }
 
+    async closeIssue(issue){
+        const closedIssue = await Issue.findByIdAndUpdate(
+            issue,
+            {ticketStatus: "closed"},
+            {new: true},
+            )
+        return closedIssue;
+    }
+
+
     async findIssuesByOrganization(organization){
         return await Issue.find({organization});
     }
@@ -39,7 +49,6 @@ class issuesRepository {
 
     async getIndividualProjectsIssuesCount(issues){
         const group = countProjectIssues(issues, "projectTitle")
-        console.log(group);
           return group;
     }
 }
