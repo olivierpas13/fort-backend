@@ -28,6 +28,26 @@ class projectsRepository{
             return updatedProject;
     };
 
+    async deleteIssueInProject({projectId, issueId}){
+        const project = await Project.findById(projectId);
+
+        if (!project) {
+          console.log('No matching project found');
+          return;
+        }
+    
+        const issue = project.issues.id(issueId);
+    
+        if (!issue) {
+          console.log('No matching issue found');
+          return;
+        }
+    
+        issue.remove();
+    
+        await project.save();
+    }
+
     async addUserToProject({id, user}){
         await Project.findByIdAndUpdate(
             id,

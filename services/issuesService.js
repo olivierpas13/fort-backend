@@ -50,7 +50,16 @@ class issuesService {
     }
 
     async deleteIssue(id){
-        return await this.repository.deleteIssue(id);
+        const deletedIssue = await this.repository.deleteIssue(id);
+        
+        if(deletedIssue){
+            await this.projectService.deleteIssueInProject({
+                projectId: deletedIssue.project,
+                issueId: deletedIssue.id
+            })
+        }
+
+        return deletedIssue
     }
 
     async editIssue({id, fields}){

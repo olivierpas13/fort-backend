@@ -17,10 +17,6 @@ class projectsService{
     }
 
     async closeIssueInProject({projectId, issueId}){
-        
-        // const updateQuery = createIssueEditQuery({
-        //     ticketStatus: "closed"
-        // });
 
         return await this.repository.updateIssueInProject({
             projectId,
@@ -28,9 +24,17 @@ class projectsService{
             updatedFields:{
                 ticketStatus: "closed"
             }
-            // updateQuery,
         })
     }
+
+    async deleteIssueInProject({projectId, issueId}){
+        
+        return await this.repository.deleteIssueInProject({
+            projectId,
+            issueId,
+        })
+
+    } 
 
     async getProjectById(id){
         return await this.repository.fetchProjectById(id);
