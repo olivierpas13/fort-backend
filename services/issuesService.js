@@ -63,7 +63,20 @@ class issuesService {
     }
 
     async editIssue({id, fields}){
-        return await this.repository.editIssue({id, fields})
+
+        const editedIssue = await this.repository.editIssue({id, fields})
+        
+        if(editedIssue){
+
+            await this.projectService.editIssueInProject({
+                projectId: editedIssue.project,
+                issueId: editedIssue.id,
+                fields,
+            })
+        }
+
+
+        return editedIssue;
     }
 
     async getAllOrganizationIssues(organization){

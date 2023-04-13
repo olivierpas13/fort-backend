@@ -36,6 +36,15 @@ class projectsService{
 
     } 
 
+    async editIssueInProject({projectId, issueId, fields}){
+        
+        return await this.repository.updateIssueInProject({
+            projectId,
+            issueId,
+            updatedFields: fields,
+        })
+    }
+
     async getProjectById(id){
         return await this.repository.fetchProjectById(id);
     }
