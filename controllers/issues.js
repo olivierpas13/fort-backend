@@ -20,14 +20,32 @@ issueRouter.post('/', async (req, res, next) => {
     }
 });
 
-// Edit issue
+// Close issue
 
 issueRouter.patch('/close/:id', async (req, res, next) => {
     try {
 
         const {id} = req.params;
-
+        
         const issue = await service.closeIssue(id);
+        
+        return res.json(issue).status(201).end();
+        
+    } catch (error) {
+        return next(error);
+    }
+});
+
+// Edit issue
+
+issueRouter.patch('/edit/:id', async (req, res, next) => {
+    try {
+        const {id} = req.params;
+
+        const issue = await service.editIssue({
+            id,
+            fields: req.body
+        });
 
         return res.json(issue).status(201).end();
 
@@ -35,6 +53,7 @@ issueRouter.patch('/close/:id', async (req, res, next) => {
         return next(error);
     }
 });
+
 // Get the organization's issues
 
 issueRouter.get('/:orgName', async (req, res, next) =>{

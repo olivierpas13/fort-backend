@@ -35,6 +35,10 @@ class issuesService {
         return await this.repository.closeIssue(issue);
     }
 
+    async editIssue({id, fields}){
+        return await this.repository.editIssue({id, fields})
+    }
+
     async getAllOrganizationIssues(organization){
     
         const org = await this.orgService.getSingleOrganization(organization)

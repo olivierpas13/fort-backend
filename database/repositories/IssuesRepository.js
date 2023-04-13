@@ -18,6 +18,15 @@ class issuesRepository {
         return closedIssue;
     }
 
+    async editIssue({id, fields}){
+        const editedIssue = await Issue.findByIdAndUpdate(
+            id,
+            {...fields},
+            {new: true}
+            )
+        return editedIssue;
+    }
+
 
     async findIssuesByOrganization(organization){
         return await Issue.find({organization});
