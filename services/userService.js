@@ -1,12 +1,12 @@
 import userRepository from "../database/repositories/userRepository.js"
-import organizationRepository from "../database/repositories/organizationRepository.js"
+import organizationService from "./organizationService.js";
 
 import { checkIfValidInput, getDataFromOrgCode, hashPassword } from '../utils/userUtils.js';
 
 class userService{
 
     constructor(){
-        this.organizationRepo = new organizationRepository()
+        this.organizationService = new organizationService()
         this.repository = new userRepository()
     }
 
@@ -63,7 +63,7 @@ class userService{
         
             if(!organizationCode && organization){
 
-                const newOrg = await this.organizationRepo.createOrganization(organization);        
+                const newOrg = await this.organizationService.createOrganization(organization);        
                 
                 savedUser = await this.repository.createAdmin({
                     name,
@@ -81,21 +81,50 @@ class userService{
         }
     }
 
+    async changeUserRole({id, role}){
+        try {
+            return await this.repository.changeRole({id, role})
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async updateUserOrganization({id, organization}){
 
-        const user = await this.repository.updateUserOrg({id, organization});
-        const org = await this.organizationRepo.getSingleOrganization({name: organization})
+        const org = await this.organizationService.getSingleOrganization(organization)
         
         if(!org){
-            await this.organizationRepo.createOrganization(organization);
+            const createdOrg = await this.organizationService.createOrganization(organization);
+            await this.repository.updateUserOrg({id, organization: createdOrg.name});
+            return await this.changeUserRole({
+                id,
+                role: "administrator",
+            })
         }
-
-        return user;
+        return await this.repository.updateUserOrg({id, organization: org.name});
     }
 
     async getAllUsersCountByProject(project){
         return await this.repository.getUsersCountFromProject(project);
     }
+
+    async addUserFromGithub({id, code}){
+        try {
+            console.log(code);
+            const {organizationName, role, project,} = getDataFromOrgCode(code);
+        
+            return await this.repository.updateUserFromGit({
+                id,
+                organization: organizationName,
+                role,
+                project,
+            })   
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
 }
 
 export default userService;

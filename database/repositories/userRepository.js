@@ -1,5 +1,7 @@
 import User from "../models/user.js";
 import projectsRepository from "./projectsRepository.js";
+import { ObjectId } from 'mongodb';
+
 
 
 class userRepository{
@@ -84,8 +86,38 @@ class userRepository{
 
     }
 
+    async changeRole({id, role}){
+        try {
+            const newid = new ObjectId(id);
+            return await User.findByIdAndUpdate(newid, {role: role.toLowerCase()}, {new: true})        
+        } catch (error) {
+            
+        }
+    }
+
+    async updateUserFromGit({id, organization, role, project}){
+        try {
+            return await User.findByIdAndUpdate(id, {
+                organization: organization,
+                role: role,
+                project: project,
+            }, {new: true})   
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async updateUserOrg({id, organization}){
-        return await User.findByIdAndUpdate(id, {organization: organization}, {new: true})
+        try {
+            
+            console.log({id, organization});
+            const newid = new ObjectId(id);
+            const updatedUser = await User.findByIdAndUpdate(newid, {organization: organization}, {new: true})
+            console.log({updatedUser});
+            return updatedUser
+        } catch (error) {
+            throw error
+        }
     }
 
     async getUsersCountFromProject(project){

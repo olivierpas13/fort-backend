@@ -1,8 +1,7 @@
 
 import Router from 'express';
-import { ObjectId } from 'mongodb';
 
-import User from '../database/models/user.js';
+import { getDataFromOrgCode } from '../utils/userUtils.js';
 import userService from '../services/userService.js';
 
 const userRouter = Router();
@@ -79,9 +78,10 @@ userRouter.patch('/:id/role', async(req, res, next)=>{
     const { id } = req.params;
     const { value } = req.body
 
-    const newid = new ObjectId(id);
-
-    const updatedUser = await User.findByIdAndUpdate(newid, {role: value.toLowerCase()}, {new: true})
+    const updatedUser = service.changeUserRole({
+      id,
+      role: value,
+    }) 
     
     return res.json(updatedUser).status(204).end();
 
@@ -89,6 +89,22 @@ userRouter.patch('/:id/role', async(req, res, next)=>{
     return next(error);
   }
 })
+
+userRouter.patch('/:id/add-from-git', async (req, res, next) => {
+  try {
+
+    const updatedUser = await service.addUserFromGithub({
+      id: req.params.id,  
+      code:req.body.code
+    })
+
+    return res.json(updatedUser).status(204).end();
+
+  } catch (error) {
+    return next(error);
+  }
+});
+
 
 
 export default userRouter;

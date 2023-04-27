@@ -52,10 +52,11 @@ class organizationService {
         }
     }
 
-    async createOrganization(name){
+    async createOrganization(organization){
         try {
-            const organization = await this.repository.createOrganization(name);
-            return organization;
+            console.log(organization);
+            const newOrganization = await this.repository.createOrganization(organization);
+            return newOrganization;
         } catch (error) {
             console.error(error);
         }
