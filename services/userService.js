@@ -18,8 +18,18 @@ class userService{
         try {
             return await this.repository.fetchUserById(id);
         } catch (error) {
-            console.error(error);
+            throw(error);
         }
+    }
+
+    async getGithubUserById(id){
+        try {
+            const user = await this.repository.fetchUserByGithubId(id);
+            console.log(user);
+            return user;
+        } catch (error) {
+            throw(error);
+        }   
     }
 
     async getAllUsersFromOrg(organization){

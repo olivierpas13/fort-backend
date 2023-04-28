@@ -1,7 +1,6 @@
 
 import Router from 'express';
 
-import { getDataFromOrgCode } from '../utils/userUtils.js';
 import userService from '../services/userService.js';
 
 const userRouter = Router();
@@ -18,7 +17,23 @@ userRouter.get('/:id', async (req, res) => {
     return res.json(user).status(200).end();
     
   } catch (error) {
-    console.error(error);
+    throw(error);
+  }
+  
+});
+
+userRouter.get('/github-user/:githubId', async (req, res) => {
+  
+  try {
+
+    const { githubId } = req.params
+    
+    const user = await service.getGithubUserById(githubId);
+    
+    return res.json(user).status(200).end();
+    
+  } catch (error) {
+    throw(error);
   }
   
 });

@@ -2,8 +2,6 @@ import User from "../models/user.js";
 import projectsRepository from "./projectsRepository.js";
 import { ObjectId } from 'mongodb';
 
-
-
 class userRepository{
     
     constructor(){
@@ -14,7 +12,15 @@ class userRepository{
         try {
             return await User.findById(id);
         } catch (error) {
-            console.error(error);
+            throw(error);
+        }
+    }
+
+    async fetchUserByGithubId(id){
+        try {
+            return await User.findOne({githubId: id});
+        } catch (error) {
+            throw(error);
         }
     }
 

@@ -8,6 +8,9 @@ export const userSchema = new mongoose.Schema({
   email:{
     type: String
   },
+  githubId:{
+    type: Number
+  },
   passwordHash: {
     type: String,
     // unique: 'Username and password required',
